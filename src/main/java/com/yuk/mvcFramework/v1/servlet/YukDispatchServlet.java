@@ -1,9 +1,6 @@
 package com.yuk.mvcFramework.v1.servlet;
 
-import com.yuk.mvcFramework.annotation.YukAutowired;
-import com.yuk.mvcFramework.annotation.YukController;
-import com.yuk.mvcFramework.annotation.YukRequestMapping;
-import com.yuk.mvcFramework.annotation.YukService;
+import com.yuk.mvcFramework.annotation.*;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -14,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.*;
@@ -52,7 +50,7 @@ public class YukDispatchServlet extends HttpServlet{
         }
     }
 
-    private void doDispatcher(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    private void doDispatcher(HttpServletRequest req, HttpServletResponse resp) throws IOException, InvocationTargetException, IllegalAccessException {
 
         //绝对路径
         String url = req.getRequestURI();
@@ -70,8 +68,47 @@ public class YukDispatchServlet extends HttpServlet{
         Map<String,String []> params = req.getParameterMap();
 
         //获取方法的形参列表
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        Object[] paramValues = new Object[parameterTypes.length];
+
+        for(int i=0;i<parameterTypes.length;i++){
+            Class parameterType = parameterTypes[i];
+            //不能用instanceof,parameterType不是实参而是形参
+            if(parameterType == HttpServletRequest.class){
+                paramValues[i] = req;
+                continue;
+            }else if(parameterType == HttpServletResponse.class){
+                paramValues[i] = resp;
+                continue;
+            }else if(parameterType == String.class){
+                YukRequestParam yukRequestParam = (YukRequestParam) parameterType.getAnnotation(YukRequestParam.class);
+                if(params.containsKey(yukRequestParam.value())){
+                    for (Map.Entry<String,String []> param : params.entrySet()) {
+                        String value = Arrays.toString(param.getValue()).replaceAll("\\[|\\]","").replaceAll("\\s",",");
+                        paramValues [i] = value;
+                    }
+                }
+            }
+
+        }
+        //通过反射拿到method所在的class，拿到class 后还要拿到class名称  ，再调用ToLowerFirstCase获得beanName
+        String beanName = toLowerFirstCase(method.getDeclaringClass().getSimpleName());
+        method.invoke(ioc.get(beanName),paramValues);
     }
 
+    //url传过来的参数都是String 类型的，HTTP是基于字符串协议
+    //将String 转化为任意类型
+    private Object convert(Class<?> type,String value){
+        //如果是int
+        if(Integer.class == type){
+            return Integer.valueOf(value);
+        }
+        //如果还double 类型 继续加if 这是可以用策略模式
+        return value;
+    }
+
+
+    //初始化阶段
     @Override
     public void init(ServletConfig config) throws ServletException {
 
