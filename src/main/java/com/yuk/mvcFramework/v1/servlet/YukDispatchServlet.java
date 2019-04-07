@@ -140,7 +140,7 @@ public class YukDispatchServlet extends HttpServlet{
 
             if(!clazz.isAnnotationPresent(YukController.class)){continue;}
 
-            //保存写在类上面的@YukRequestMapping("/springv101")
+            //保存写在类上面的@YukRequestMapping("/demo")
             String baseUrl = "";
             if(clazz.isAnnotationPresent(YukRequestMapping.class)){
                 YukRequestMapping yukRequestMapping = clazz.getAnnotation(YukRequestMapping.class);
@@ -151,9 +151,9 @@ public class YukDispatchServlet extends HttpServlet{
             for(Method method : clazz.getMethods()){
                 if(!method.isAnnotationPresent(YukRequestMapping.class)){continue;}
 
-                YukRequestMapping yukRequestMapping = clazz.getAnnotation(YukRequestMapping.class);
+                YukRequestMapping yukRequestMapping = method.getAnnotation(YukRequestMapping.class);
 
-                String url = ("/" + baseUrl + yukRequestMapping.value().replaceAll("/+","/"));
+                String url = (baseUrl + yukRequestMapping.value().replaceAll("/+","/"));
                 handlerMapping.put(url,method);
                 System.out.println("Mapped  :" + url +"," + method);
             }

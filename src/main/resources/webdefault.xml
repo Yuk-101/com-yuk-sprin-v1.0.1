@@ -110,7 +110,7 @@
   <!--                    An nio cached buffer may not be used by bio.      -->
   <!--                                                                      -->
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
-  <servlet>
+ <!-- <servlet>
     <servlet-name>default</servlet-name>
     <servlet-class>org.mortbay.jetty.servlet.DefaultServlet</servlet-class>
     <init-param>
@@ -153,16 +153,19 @@
       <param-name>useFileMappedBuffer</param-name>
       <param-value>false</param-value>
     </init-param>  
-    <!--
+    &lt;!&ndash;
     <init-param>
       <param-name>cacheControl</param-name>
       <param-value>max-age=3600,public</param-value>
     </init-param>
-    -->
+    &ndash;&gt;
     <load-on-startup>0</load-on-startup>
   </servlet> 
 
-  <servlet-mapping> <servlet-name>default</servlet-name> <url-pattern>/</url-pattern> </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>default</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>-->
   
 
   <!-- ==================================================================== -->
@@ -250,7 +253,7 @@
   <!--   If you get an error reporting that jikes can't use UTF-8 encoding, -->
   <!--   try setting the init parameter "javaEncoding" to "ISO-8859-1".     -->
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
-  <servlet id="jsp">
+  <!--<servlet id="jsp">
     <servlet-name>jsp</servlet-name>
     <servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
     <init-param>
@@ -265,26 +268,26 @@
         <param-name>xpoweredBy</param-name>
         <param-value>false</param-value>
     </init-param>
-    <!--  
+    &lt;!&ndash;
     <init-param>
         <param-name>classpath</param-name>
         <param-value>?</param-value>
     </init-param>
-    -->
+    &ndash;&gt;
     <load-on-startup>0</load-on-startup>
-  </servlet>
+  </servlet>-->
 
-  <servlet-mapping> 
-    <servlet-name>jsp</servlet-name> 
-    <url-pattern>*.jsp</url-pattern> 
+  <!--<servlet-mapping>
+    <servlet-name>jsp</servlet-name>
+    <url-pattern>*.jsp</url-pattern>
     <url-pattern>*.jspf</url-pattern>
     <url-pattern>*.jspx</url-pattern>
     <url-pattern>*.xsp</url-pattern>
-    <url-pattern>*.JSP</url-pattern> 
+    <url-pattern>*.JSP</url-pattern>
     <url-pattern>*.JSPF</url-pattern>
     <url-pattern>*.JSPX</url-pattern>
     <url-pattern>*.XSP</url-pattern>
-  </servlet-mapping>
+  </servlet-mapping>-->
   
   <!-- ==================================================================== -->
   <!-- Dynamic Servlet Invoker.                                             -->
